@@ -13,7 +13,7 @@ let score = 0;
 let gameOver = false;
 
 function drawBird() {
-  ctx.fillStyle = "red";
+  ctx.fillStyle = "blue";
   ctx.fillRect(bird.x, bird.y, bird.width, bird.height);
 }
 
