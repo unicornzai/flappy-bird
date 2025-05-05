@@ -11,6 +11,15 @@ let pipeGap = 250;
 let frame = 0;
 let score = 0;
 let gameOver = false;
+let pipesSpawned = 0;
+
+function restart() {
+  bird = { x: 80, y: 200,width: 30,height: 30, velocity: 0}
+  pipes = [];
+  frame = 0;
+  score = 0;
+  gameOver = false;
+}
 
 function drawBird() {
   ctx.fillStyle = "blue";
@@ -35,10 +44,16 @@ function updateBird() {
 }
 
 function updatePipes() {
-  if (frame % 90 === 0) {
-    const top = Math.random() * (canvas.height - pipeGap - 100) + 20;
-    pipes.push({ x: canvas.width, width: 50, top });
+ if (frame % 90 === 0) {
+  const top = Math.random() * (canvas.height - pipeGap - 100) + 20;
+  pipes.push({ x: canvas.width, width: 50, top });
+  pipesSpawned++;
+
+  if (pipesSpawned % 20 === 0 && pipeGap > 100) {
+    pipeGap -= 20;
   }
+}
+ 
 
   pipes.forEach(pipe => {
     pipe.x -= 2;
@@ -70,23 +85,29 @@ function gameLoop() {
     ctx.fillStyle = "red";
     ctx.font = "48px Arial";
     ctx.fillText("Game Over", 80, canvas.height / 2);
-    return;
+    //return;
   }
+  else {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    updateBird();
+    updatePipes();
+    drawPipes();
+    drawBird();
+    drawScore();
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  updateBird();
-  updatePipes();
-  drawPipes();
-  drawBird();
-  drawScore();
-
-  frame++;
+    frame++;
+  }
   requestAnimationFrame(gameLoop);
 }
 
 document.addEventListener("keydown", (e) => {
   if (e.code === "Space") {
     bird.velocity = flapStrength;
+  }
+  else if (e.code === "KeyR") {
+    if (gameOver) {
+      restart();
+    }
   }
 });
 
